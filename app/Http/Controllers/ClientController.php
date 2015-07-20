@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use CodeProject\Http\Requests;
 use CodeProject\Http\Controllers\Controller;
 
+use CodeProject\Client;
+
 class ClientController extends Controller
 {
     /**
@@ -16,7 +18,7 @@ class ClientController extends Controller
      */
     public function index()
     {
-        return \CodeProject\Client::all();
+        return Client::all();
     }
 
     /**
@@ -24,9 +26,9 @@ class ClientController extends Controller
      *
      * @return Response
      */
-    public function create()
+    public function create(Request $request)
     {
-        //
+        return Client::create($request->all());
     }
 
     /**
@@ -37,7 +39,7 @@ class ClientController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        return Client::create($request->all());
     }
 
     /**
@@ -48,7 +50,7 @@ class ClientController extends Controller
      */
     public function show($id)
     {
-        //
+        return Client::find($id);
     }
 
     /**
@@ -71,7 +73,12 @@ class ClientController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $result = Client::find($id)->update($request->all());
+
+        if($result)
+            return ['error' => 0];
+
+        return  ['error' => 1, 'msg' => 'Erro ao tentar atualizar o Cliente'];
     }
 
     /**
@@ -82,6 +89,11 @@ class ClientController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $result = Client::find($id)->delete();
+
+        if($result)
+            return ['error' => 0];
+
+        return  ['error' => 1, 'msg' => 'Erro ao tentar deletar o Cliente'];
     }
 }
