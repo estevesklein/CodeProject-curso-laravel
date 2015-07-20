@@ -1,3 +1,6 @@
+## Curso Laravel + AngularJs (20/07/2015)
+Projeto CodeProject da Code Education.
+
 ## Laravel PHP Framework
 
 [![Build Status](https://travis-ci.org/laravel/framework.svg)](https://travis-ci.org/laravel/framework)
