@@ -3,14 +3,32 @@
 namespace CodeProject\Http\Controllers;
 
 use Illuminate\Http\Request;
-
-use CodeProject\Http\Requests;
-use CodeProject\Http\Controllers\Controller;
-
-use CodeProject\Client;
+use CodeProject\Repositories\ClientRepository;
+use CodeProject\Services\ClientService;
 
 class ClientController extends Controller
 {
+
+    /**
+     * @var ClientRepository
+     */
+    private $repository;
+
+    /**
+     * @var ClientService
+     */
+    private $service;
+
+    /**
+     * @param ClientRepository $repository
+     * @param ClientService $service
+     */
+    public function __construct(ClientRepository $repository, ClientService $service)
+    {
+        $this->repository = $repository;
+        $this->service = $service;
+    }
+    
     /**
      * Display a listing of the resource.
      *
@@ -18,7 +36,7 @@ class ClientController extends Controller
      */
     public function index()
     {
-        return Client::all();
+        return $this->repository->all();
     }
 
     /**
@@ -28,7 +46,8 @@ class ClientController extends Controller
      */
     public function create(Request $request)
     {
-        return Client::create($request->all());
+        //dd($request->all());
+        return $this->service->create($request->all());
     }
 
     /**
@@ -39,7 +58,7 @@ class ClientController extends Controller
      */
     public function store(Request $request)
     {
-        return Client::create($request->all());
+        //return $this->repository->create($request->all());
     }
 
     /**
@@ -50,7 +69,7 @@ class ClientController extends Controller
      */
     public function show($id)
     {
-        return Client::find($id);
+        return $this->repository->find($id);
     }
 
     /**
@@ -73,12 +92,15 @@ class ClientController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $result = Client::find($id)->update($request->all());
+        
+        return $this->service->update($request->all(),$id);
 
+        /*
+        $result = $this->repository->find($id)->update($request->all());
         if($result)
             return ['error' => 0];
-
         return  ['error' => 1, 'msg' => 'Erro ao tentar atualizar o Cliente'];
+        */
     }
 
     /**
@@ -89,7 +111,7 @@ class ClientController extends Controller
      */
     public function destroy($id)
     {
-        $result = Client::find($id)->delete();
+        $result = $this->repository->find($id)->delete();
 
         if($result)
             return ['error' => 0];
