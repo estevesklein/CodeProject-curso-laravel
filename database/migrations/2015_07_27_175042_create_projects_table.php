@@ -16,8 +16,6 @@ class CreateProjectsTable extends Migration
             $table->increments('id');
             $table->integer('owner_id')->unsigned();
             $table->integer('client_id')->unsigned();
-            //$table->foreign('owner_id')->references('id')->on('users');
-            //$table->foreign('client_id')->references('id')->on('clients');
             $table->string('name');
             $table->text('description');
             $table->text('progress');
@@ -27,10 +25,10 @@ class CreateProjectsTable extends Migration
         });
 
 
-        Schema::table('projects', function($table) {
-            $table->foreign('owner_id')->references('id')->on('users');
-            $table->foreign('client_id')->references('id')->on('clients');
-        });
+        //Schema::table('projects', function($table) {
+        //    $table->foreign('owner_id')->references('id')->on('users');
+        //    $table->foreign('client_id')->references('id')->on('clients');
+        //});
 
     }
 
