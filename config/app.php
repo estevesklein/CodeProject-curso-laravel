@@ -137,12 +137,18 @@ return [
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
 
+        // 24.07.2015
+        Prettus\Repository\Providers\RepositoryServiceProvider::class,
+
         /*
          * Application Service Providers...
          */
         CodeProject\Providers\AppServiceProvider::class,
         CodeProject\Providers\EventServiceProvider::class,
         CodeProject\Providers\RouteServiceProvider::class,
+
+        // 24.07.2015
+        CodeProject\Providers\CodeProjectRepositoryProvider::class,
 
     ],
 
