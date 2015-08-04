@@ -12,7 +12,7 @@ class ProjectTableSeeder extends Seeder
     public function run()
     {
         // apagar todos os registro da tabela
-        \CodeProject\Entities\Project::truncate();
+        //\CodeProject\Entities\Project::truncate();
         // criar 10 registros na tabela
         factory(\CodeProject\Entities\Project::class, 10)->create();
     }

@@ -3,27 +3,27 @@
 namespace CodeProject\Http\Controllers;
 
 use Illuminate\Http\Request;
-use CodeProject\Repositories\ProjectRepository;
-use CodeProject\Services\ProjectService;
+use CodeProject\Repositories\ProjectNoteRepository;
+use CodeProject\Services\ProjectNoteService;
 
-class ProjectController extends Controller
+class ProjectNoteController extends Controller
 {
 
     /**
-     * @var ProjectRepository
+     * @var ProjectNoteRepository
      */
     private $repository;
 
     /**
-     * @var ProjectService
+     * @var ProjectNoteService
      */
     private $service;
 
     /**
-     * @param ProjectRepository $repository
-     * @param ProjectService $service
+     * @param ProjectNoteRepository $repository
+     * @param ProjectNoteService $service
      */
-    public function __construct(ProjectRepository $repository, ProjectService $service)
+    public function __construct(ProjectNoteRepository $repository, ProjectNoteService $service)
     {
 
         $this->repository = $repository;
@@ -35,10 +35,11 @@ class ProjectController extends Controller
      *
      * @return Response
      */
-    public function index()
+    public function index($id)
     {
-        return $this->repository->all();
+        //return $this->repository->all();
         //return $this->repository->with(['client', 'user'])->all();
+        return $this->repository->findWhere(['project_id' => $id]);
     }
 
     /**
@@ -69,10 +70,9 @@ class ProjectController extends Controller
      * @param  int  $id
      * @return Response
      */
-    public function show($id, $noteId)
+    public function show($id)
     {
-        return $this->repository->findWhere(['project_id' => $id, 'id' => $noteId]);
-        //return $this->repository->find($id);
+        return $this->repository->find($id);
         //return $this->repository->with(['client', 'user'])->find($id);
     }
 
@@ -94,11 +94,17 @@ class ProjectController extends Controller
      * @param  int  $id
      * @return Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $id, $noteId)
     {
         
-        return $this->service->update($request->all(),$id);
+        return $this->service->update($request->all(),$noteId);
 
+        /*
+        $result = $this->repository->find($id)->update($request->all());
+        if($result)
+            return ['error' => 0];
+        return  ['error' => 1, 'msg' => 'Erro ao tentar atualizar o Projecte'];
+        */
     }
 
     /**
@@ -107,14 +113,17 @@ class ProjectController extends Controller
      * @param  int  $id
      * @return Response
      */
-    public function destroy($id)
+    public function destroy($id, $noteId)
     {
+        return $this->repository->delete($noteId);
+
+        /*
         $result = $this->repository->find($id)->delete();
 
         if($result)
             return ['error' => 0];
 
-        return  ['error' => 1, 'msg' => 'Erro ao tentar deletar o Project'];
+        return  ['error' => 1, 'msg' => 'Erro ao tentar deletar o Projecte'];
+        */
     }
-
 }

@@ -3,27 +3,27 @@
 namespace CodeProject\Http\Controllers;
 
 use Illuminate\Http\Request;
-use CodeProject\Repositories\ProjectRepository;
-use CodeProject\Services\ProjectService;
+use CodeProject\Repositories\ProjectTaskRepository;
+use CodeProject\Services\ProjectTaskService;
 
-class ProjectController extends Controller
+class ProjectTaskController extends Controller
 {
 
     /**
-     * @var ProjectRepository
+     * @var ProjectTaskRepository
      */
     private $repository;
 
     /**
-     * @var ProjectService
+     * @var ProjectTaskService
      */
     private $service;
 
     /**
-     * @param ProjectRepository $repository
-     * @param ProjectService $service
+     * @param ProjectTaskRepository $repository
+     * @param ProjectTaskService $service
      */
-    public function __construct(ProjectRepository $repository, ProjectService $service)
+    public function __construct(ProjectTaskRepository $repository, ProjectTaskService $service)
     {
 
         $this->repository = $repository;
@@ -39,6 +39,7 @@ class ProjectController extends Controller
     {
         return $this->repository->all();
         //return $this->repository->with(['client', 'user'])->all();
+        //return $this->repository->findWhere(['project_id' => $id]);
     }
 
     /**
@@ -69,11 +70,9 @@ class ProjectController extends Controller
      * @param  int  $id
      * @return Response
      */
-    public function show($id, $noteId)
+    public function show($id)
     {
-        return $this->repository->findWhere(['project_id' => $id, 'id' => $noteId]);
-        //return $this->repository->find($id);
-        //return $this->repository->with(['client', 'user'])->find($id);
+        return $this->repository->find($id);
     }
 
     /**
@@ -109,12 +108,16 @@ class ProjectController extends Controller
      */
     public function destroy($id)
     {
+        //return $this->repository->delete($taskId);
+
         $result = $this->repository->find($id)->delete();
+        //$result = $this->repository->delete($id);
 
         if($result)
             return ['error' => 0];
 
-        return  ['error' => 1, 'msg' => 'Erro ao tentar deletar o Project'];
-    }
+        return  ['error' => 1, 'msg' => 'Erro ao tentar deletar a Task'];
+        
 
+    }
 }

@@ -34,13 +34,40 @@ $factory->define(CodeProject\Entities\Client::class, function (Faker\Generator $
 
 $factory->define(CodeProject\Entities\Project::class, function (Faker\Generator $faker) {
     return [
-        'owner_id' => $faker->numberBetween(1,10),
-        'client_id' => $faker->numberBetween(1,10),
-        'name' => $faker->name,
+        'owner_id' => rand(1,10),
+        //'owner_id' => $faker->numberBetween(1,10),
+        'client_id' => rand(1,10),
+        'name' => $faker->word,
         'description' => $faker->sentence,
-        'progress' => $faker->text(10),
-        'status' => $faker->randomElement(['a','b','c']),
+        'progress' => rand(1,100),
+        //'status' => $faker->randomElement(['a','b','c']),
+        'status' => rand(1,3),
         'due_date' => $faker->dateTime('now'),
     ];
 });
 
+$factory->define(CodeProject\Entities\ProjectNote::class, function (Faker\Generator $faker) {
+    return [
+        'project_id' => rand(1,10),
+        'title' => $faker->word,
+        'note' => $faker->paragraph,
+    ];
+});
+
+$factory->define(CodeProject\Entities\ProjectTask::class, function (Faker\Generator $faker) {
+    return [
+        'project_id' => rand(1,10),
+        'name' => $faker->word,
+        'start_date' => $faker->dateTime('now'),
+        'due_date' => $faker->dateTime('now'),
+        'status' => rand(1,3),
+    ];
+});
+
+
+$factory->define(CodeProject\Entities\ProjectMember::class, function (Faker\Generator $faker) {
+    return [
+        'project_id' => rand(1,10),
+        'user_id' => rand(1,10),
+    ];
+});

@@ -28,12 +28,28 @@ class Project extends Model
 
     public function client()
     {
-        return $this->belongsTo('CodeProject\Entities\Client');
+        return $this->belongsTo(Client::class);
     }
 
     public function user()
     {
-        return $this->belongsTo('CodeProject\Entities\User', 'owner_id');
+        return $this->belongsTo(User::class, 'owner_id');
     }
+
+    public function notes()
+    {
+        return $this->hasMany(ProjectNote::class);
+    }
+
+    public function tasks()
+    {
+        return $this->hasMany(ProjectTask::class);
+    }
+
+
+    //public function members()
+    //{
+    //    return $this->belongsToMany(User::class, 'project_members', 'project_id', 'user_id');
+    //}
 
 }

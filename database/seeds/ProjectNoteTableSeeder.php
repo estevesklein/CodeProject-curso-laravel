@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Seeder;
 
-class ClientTableSeeder extends Seeder
+class ProjectNoteTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -12,8 +12,8 @@ class ClientTableSeeder extends Seeder
     public function run()
     {
         // apagar todos os registro da tabela
-        //\CodeProject\Entities\Client::truncate();
+        //\CodeProject\Entities\ProjectNote::truncate();
         // criar 10 registros na tabela
-        factory(\CodeProject\Entities\Client::class, 10)->create();
+        factory(\CodeProject\Entities\ProjectNote::class, 50)->create();
     }
 }
