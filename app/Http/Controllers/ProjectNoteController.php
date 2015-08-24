@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use CodeProject\Repositories\ProjectNoteRepository;
 use CodeProject\Services\ProjectNoteService;
 
+use CodeProject\Services\ProjectService;
+
 class ProjectNoteController extends Controller
 {
 
@@ -20,14 +22,20 @@ class ProjectNoteController extends Controller
     private $service;
 
     /**
+     * @var ProjectService
+     */
+    private $projectService;
+
+    /**
      * @param ProjectNoteRepository $repository
      * @param ProjectNoteService $service
      */
-    public function __construct(ProjectNoteRepository $repository, ProjectNoteService $service)
+    public function __construct(ProjectNoteRepository $repository, ProjectNoteService $service, ProjectService $projectService)
     {
 
         $this->repository = $repository;
         $this->service = $service;
+        $this->projectService = $projectService;
     }
 
     /**
@@ -35,11 +43,15 @@ class ProjectNoteController extends Controller
      *
      * @return Response
      */
-    public function index($id)
+    public function index($projectId)
     {
+        if($this->checkProjectNotePermissions($projectId) == false){
+            return ['error' => 'Access Forbidden'];
+        }
+
         //return $this->repository->all();
         //return $this->repository->with(['client', 'user'])->all();
-        return $this->repository->findWhere(['project_id' => $id]);
+        return $this->repository->findWhere(['project_id' => $projectId]);
     }
 
     /**
@@ -61,7 +73,7 @@ class ProjectNoteController extends Controller
      */
     public function store(Request $request)
     {
-        return $this->repository->create($request->all());
+        //return $this->repository->create($request->all());
     }
 
     /**
@@ -70,8 +82,12 @@ class ProjectNoteController extends Controller
      * @param  int  $id
      * @return Response
      */
-    public function show($id)
+    public function show($projectId, $id)
     {
+        if($this->checkProjectNotePermissions($projectId) == false){
+            return ['error' => 'Access Forbidden'];
+        }
+
         return $this->repository->find($id);
         //return $this->repository->with(['client', 'user'])->find($id);
     }
@@ -94,9 +110,17 @@ class ProjectNoteController extends Controller
      * @param  int  $id
      * @return Response
      */
-    public function update(Request $request, $id, $noteId)
+    public function update(Request $request, $id)
     {
         
+        $projectNote = $this->repository->skipPresenter()->find($id);
+
+        $projectId = $projectNote->project_id;
+
+        if($this->checkProjectNotePermissions($projectId) == false){
+            return ['error' => 'Access Forbidden'];
+        }
+
         return $this->service->update($request->all(),$noteId);
 
         /*
@@ -113,9 +137,25 @@ class ProjectNoteController extends Controller
      * @param  int  $id
      * @return Response
      */
-    public function destroy($id, $noteId)
+    public function destroy($id)
     {
-        return $this->repository->delete($noteId);
+
+        $projectNote = $this->repository->skipPresenter()->find($id);
+        //$result = $this->repository->delete($id);
+
+        $projectId = $projectNote->project_id;
+
+        if($this->checkProjectNotePermissions($projectId) == false){
+            return ['error' => 'Access Forbidden'];
+        }
+
+        $result = $projectNote->delete();
+
+        if($result)
+            return ['error' => 0];
+
+        return  ['error' => 1, 'msg' => 'Erro ao tentar deletar a Task Note'];
+        
 
         /*
         $result = $this->repository->find($id)->delete();
@@ -125,5 +165,16 @@ class ProjectNoteController extends Controller
 
         return  ['error' => 1, 'msg' => 'Erro ao tentar deletar o Projecte'];
         */
+    }
+
+
+
+    private function checkProjectNotePermissions($projectId){
+        
+        if($this->projectService->checkProjectOwner($projectId) or $this->projectService->checkProjectMember($projectId)){
+            return true;
+        }
+        return false;
+
     }
 }

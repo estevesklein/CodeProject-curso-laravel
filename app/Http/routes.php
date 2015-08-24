@@ -15,39 +15,63 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-// Clients
-Route::get('client', 'ClientController@index');
-//Route::post('client', 'ClientController@store');
-Route::post('client', 'ClientController@create');
-Route::get('client/{id}', 'ClientController@show');
-Route::delete('client/{id}', 'ClientController@destroy');
-Route::put('client/{id}', 'ClientController@update');
+Route::post('oauth/access_token', function(){
+	return Response::json(Authorizer::issueAccessToken());
+});
 
 
-// 04.08.2015 - Project Task
-Route::get('project/task', 'ProjectTaskController@index');
-Route::post('project/task', 'ProjectTaskController@store');
-Route::get('project/task/{id}', 'ProjectTaskController@show');
-Route::put('project/task/{id}', 'ProjectTaskController@update');
-Route::delete('project/task/{id}', 'ProjectTaskController@destroy');
+Route::group(['middleware' => 'oauth'], function(){
+
+	// Clients
+	Route::resource('client', 'ClientController', ['except' => ['create', 'edit']]);
+	/*
+		Route::get('client', ['middleware' => 'oauth', 'uses' => 'ClientController@index']);
+		//Route::get('client', 'ClientController@index');
+		//Route::post('client', 'ClientController@store');
+		Route::post('client', 'ClientController@create');
+		Route::get('client/{id}', 'ClientController@show');
+		Route::delete('client/{id}', 'ClientController@destroy');
+		Route::put('client/{id}', 'ClientController@update');
+	*/
+
+	// middleware Project
+	//Route::group(['middleware' => 'CheckProjectOwner'], function(){
+	//	Route::resource('project', 'ProjectController', ['except' => ['create', 'edit']]);
+	//});
+
+	Route::resource('project', 'ProjectController', ['except' => ['create', 'edit']]);
+	
+
+	Route::group(['prefix' => 'project'], function(){
+	
+		/*
+		Route::get('task', 'ProjectTaskController@index');
+		Route::post('task', 'ProjectTaskController@store');
+		Route::get('task/{id}', 'ProjectTaskController@show');
+		Route::put('task/{id}', 'ProjectTaskController@update');
+		Route::delete('task/{id}', 'ProjectTaskController@destroy');
+		*/
+		// 23.08.2015 - Project Task
+		Route::get('{projectId}/task', 'ProjectTaskController@index');
+		//Route::post('{projectId}/task', 'ProjectTaskController@store');
+		Route::get('{projectId}/task/{id}', 'ProjectTaskController@show');
+		Route::put('task/{id}', 'ProjectTaskController@update');
+		Route::delete('task/{id}', 'ProjectTaskController@destroy');
 
 
-// 04.08.2015 - Project Note
-Route::get('project/{id}/note', 'ProjectNoteController@index');
-Route::post('project/{id}/note', 'ProjectNoteController@store');
-Route::get('project/{id}/note/{noteId}', 'ProjectNoteController@show');
-Route::put('project/{id}/note/{noteId}', 'ProjectNoteController@update');
-Route::delete('project/{id}/note/{noteId}', 'ProjectNoteController@destroy');
+		// 04.08.2015 - Project Note
+		Route::get('{projectId}/note', 'ProjectNoteController@index');
+		//Route::post('{id}/note', 'ProjectNoteController@store');
+		Route::get('{projectId}/note/{id}', 'ProjectNoteController@show');
+		Route::put('note/{id}', 'ProjectNoteController@update');
+		Route::delete('note/{id}', 'ProjectNoteController@destroy');
 
+		// Todos os membros do projeto (04.08.2015)
+		//Route::get('project/{id}/members', 'ProjectController@members');
+		Route::get('{id}/members', 'ProjectMemberController@members');
 
-// Todos os membros do projeto (04.08.2015)
-//Route::get('project/{id}/members', 'ProjectController@members');
-Route::get('project/{id}/members', 'ProjectMemberController@members');
+		Route::post('{id}/file', 'ProjectFileController@store');
 
-// Projets (27.07.2015)
-Route::get('project', 'ProjectController@index');
-Route::post('project', 'ProjectController@create');
-Route::get('project/{id}', 'ProjectController@show');
-Route::delete('project/{id}', 'ProjectController@destroy');
-Route::put('project/{id}', 'ProjectController@update');
-
+		Route::delete('{id}/file', 'ProjectFileController@destroy');
+	});
+});
