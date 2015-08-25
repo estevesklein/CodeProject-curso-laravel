@@ -7,7 +7,7 @@
 	<title>Laravel</title>
 
 	@if(Config::get('app.debug'))
-		<link href="{{ asset('build/css/vendor/bootstrap.css') }}" rel="stylesheet"/>
+		<link href="{{ asset('build/css/vendor/bootstrap.min.css') }}" rel="stylesheet"/>
 		<link href="{{ asset('build/css/vendor/bootstrap-theme.min.css') }}" rel="stylesheet"/>
 	@else
 		<link href="{{ elixir('css/all.css') }}" rel="stylesheet"/>
@@ -63,17 +63,17 @@
 	@yield('content')
 
 	<!-- Scripts -->
-	@if(Config::get('app.debug'))
-		<script src="{{ assets('build/js/vendor/jquery.min.js') }}"></script>
-		<script src="{{ assets('build/js/vendor/angular.min.js') }}"></script>
-		<script src="{{ assets('build/js/vendor/angular-route.min.js') }}"></script>
-		<script src="{{ assets('build/js/vendor/angular-resource.min.js') }}"></script>
-		<script src="{{ assets('build/js/vendor/angular-animate.min.js') }}"></script>
-		<script src="{{ assets('build/js/vendor/angular-messages.min.js') }}"></script>
-		<script src="{{ assets('build/js/vendor/ui-bootstrap.min.js') }}"></script>
-		<script src="{{ assets('build/js/vendor/navbar.min.js') }}"></script>
-	@else
-		<script src="{{ elixir('js/all.js') }}"></script>
-	@endif
+@if(Config::get('app.debug'))
+<script src="{{ asset('build/js/vendor/jquery.min.js') }}"></script>
+<script src="{{ asset('build/js/vendor/angular.min.js') }}"></script>
+<script src="{{ asset('build/js/vendor/angular-route.min.js') }}"></script>
+<script src="{{ asset('build/js/vendor/angular-resource.min.js') }}"></script>
+<script src="{{ asset('build/js/vendor/angular-animate.min.js') }}"></script>
+<script src="{{ asset('build/js/vendor/angular-messages.min.js') }}"></script>
+<script src="{{ asset('build/js/vendor/ui-bootstrap.min.js') }}"></script>
+<script src="{{ asset('build/js/vendor/navbar.min.js') }}"></script>
+@else
+<script src="{{ elixir('js/all.js') }}"></script>
+@endif
 </body>
 </html>

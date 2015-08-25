@@ -14,7 +14,7 @@
     "**/.*",
     "node_modules",
     "bower_components",
-    "resources/bower_componentes",
+    "resources/bower_components",
     "test",
     "tests"
   ],
