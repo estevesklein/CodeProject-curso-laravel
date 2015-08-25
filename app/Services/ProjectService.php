@@ -147,6 +147,11 @@ class ProjectService
 
         try {
             //dd($data);
+
+            //dd($data['file']);
+
+            if(!empty($data['file']))
+                $data['extension'] = $data['file']->getClientOriginalExtension();
             
             $this->validatorProjectFile->with($data)->passesOrFail();
 

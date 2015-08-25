@@ -36,12 +36,15 @@ class ProjectFileController extends Controller
      */
     public function store(Request $request)
     {
+
+        //dd($request->name);
+
         $file = $request->file('file');
-        $extension = $file->getClientOriginalExtension();
+        //$extension = $file->getClientOriginalExtension();
 
         $data = [
             'file' => $request->file,
-            'extension' => $extension,
+            //'extension' => $extension,
             'name' => $request->name,
             'project_id' => $request->project_id,
             'description' => $request->description,
