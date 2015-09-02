@@ -36,7 +36,8 @@ class ClientController extends Controller
      */
     public function index()
     {
-        return $this->repository->all();
+        //return $this->repository->all();
+        return $this->repository->skipPresenter()->all();
     }
 
     /**
@@ -58,7 +59,7 @@ class ClientController extends Controller
      */
     public function store(Request $request)
     {
-        //return $this->repository->create($request->all());
+        return $this->repository->create($request->all());
     }
 
     /**
@@ -69,7 +70,8 @@ class ClientController extends Controller
      */
     public function show($id)
     {
-        return $this->repository->find($id);
+        //return $this->repository->find($id);
+        return $this->repository->skipPresenter()->find($id);
     }
 
     /**
@@ -111,11 +113,13 @@ class ClientController extends Controller
      */
     public function destroy($id)
     {
-        $result = $this->repository->find($id)->delete();
+        //$result = $this->repository->find($id)->delete();
+        $result = $this->repository->skipPresenter()->find($id)->delete();
 
         if($result)
             return ['error' => 0];
 
         return  ['error' => 1, 'msg' => 'Erro ao tentar deletar o Cliente'];
     }
+
 }
