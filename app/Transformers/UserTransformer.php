@@ -15,7 +15,7 @@ class UserTransformer extends TransformerAbstract
 			'id' => $data->id,
 			'name' => $data->name,
 			'email' => $data->email,
-			'password' => $data->password,
+			//'password' => $data->password,
 			'remember_token' => $data->remember_token,
 		];
 	}

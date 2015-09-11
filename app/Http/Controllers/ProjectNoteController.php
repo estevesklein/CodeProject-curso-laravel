@@ -121,7 +121,8 @@ class ProjectNoteController extends Controller
             return ['error' => 'Access Forbidden'];
         }
 
-        return $this->service->update($request->all(),$noteId);
+        //return $this->service->update($request->all(),$noteId);
+        return $this->service->update($request->all(),$id);
 
         /*
         $result = $this->repository->find($id)->update($request->all());

@@ -21,10 +21,13 @@ Route::post('oauth/access_token', function(){
 });
 
 
+
+	
 Route::group(['middleware' => 'oauth'], function(){
 
 	// Clients
 	Route::resource('client', 'ClientController', ['except' => ['create', 'edit']]);
+
 	/*
 		Route::get('client', ['middleware' => 'oauth', 'uses' => 'ClientController@index']);
 		//Route::get('client', 'ClientController@index');
@@ -41,6 +44,8 @@ Route::group(['middleware' => 'oauth'], function(){
 	//});
 
 	Route::resource('project', 'ProjectController', ['except' => ['create', 'edit']]);
+
+
 	
 
 	Route::group(['prefix' => 'project'], function(){
@@ -62,10 +67,14 @@ Route::group(['middleware' => 'oauth'], function(){
 
 		// 04.08.2015 - Project Note
 		Route::get('{projectId}/note', 'ProjectNoteController@index');
-		//Route::post('{id}/note', 'ProjectNoteController@store');
 		Route::get('{projectId}/note/{id}', 'ProjectNoteController@show');
+		//Route::post('{id}/note', 'ProjectNoteController@store');
+		Route::post('{id}/note', 'ProjectNoteController@create');
 		Route::put('note/{id}', 'ProjectNoteController@update');
+
 		Route::delete('note/{id}', 'ProjectNoteController@destroy');
+
+		
 
 		// Todos os membros do projeto (04.08.2015)
 		//Route::get('project/{id}/members', 'ProjectController@members');
@@ -75,4 +84,8 @@ Route::group(['middleware' => 'oauth'], function(){
 
 		Route::delete('{id}/file', 'ProjectFileController@destroy');
 	});
+
+
+
+	Route::get('user/authenticated', 'UserController@authenticated');
 });
