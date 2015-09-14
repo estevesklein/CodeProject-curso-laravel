@@ -3,8 +3,16 @@ angular.module('app.controllers')
 	['$scope', '$routeParams', '$location', '$cookies', 'Project', 'Client', 'appConfig',
 	function($scope, $routeParams, $location, $cookies, Project, Client, appConfig){
 
-		$scope.project = Project.get({id: $routeParams.id});
-		$scope.clients = Client.query();
+		Project.get({id: $routeParams.id}, function(data){
+			$scope.project = data;
+
+			$scope.clientSelected = data.client.data;
+
+			//Client.get({id: data.client_id}, function(data){
+			//	$scope.clientSelected = data;
+			//});
+		});
+		//$scope.clients = Client.query();
 		$scope.status = appConfig.project.status;
 
 		//console.log($scope.project);
@@ -17,5 +25,23 @@ angular.module('app.controllers')
 					$location.path('/projects');
 				});
 			}
-		}
+		};
+
+		$scope.formatName = function(model){
+			if(model){
+				return model.name;
+			}
+			return '';
+		};
+
+		$scope.getClients = function(name){
+			return Client.query({
+				search: name,
+				searcheFields: 'name:like'
+			}).$promise; // garante q estamos retornando os dados
+		};
+
+		$scope.selectClient = function(item){
+			$scope.project.client_id = item.id;
+		};
 }]);

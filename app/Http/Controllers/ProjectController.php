@@ -125,16 +125,17 @@ class ProjectController extends Controller
             return ['error' => 'Access Forbidden'];
         }
 
-        return $this->repository->delete($id);
+        //return $this->repository->delete($id);
 
-        /*
-        $result = $this->repository->find($id)->delete();
+        ///*
+        //$result = $this->repository->find($id)->delete();
+        $result = $this->repository->delete($id);
 
         if($result)
             return ['error' => 0];
 
         return  ['error' => 1, 'msg' => 'Erro ao tentar deletar o Project'];
-        */
+        //*/
     }
 
 
