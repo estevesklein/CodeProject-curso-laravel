@@ -9,13 +9,15 @@ class ProjectTransformer extends TransformerAbstract
 {
 
 	// vai incluir os membros no final do resultado
-	protected $defaultIncludes = ['members'];
+	protected $defaultIncludes = ['members', 'client'];
 
 	public function transform(Project $project)
 	{
 		return [
-			'project_id' => $project->id,
-			'project' => $project->name,
+			'id' => $project->id,
+			'name' => $project->name,
+			'client_id' => $project->client_id,
+			'owner_id' => $project->owner_id,
 			//'members' => $project->members,
 			'description' => $project->description,
 			'progress' => $project->progress,
@@ -28,5 +30,12 @@ class ProjectTransformer extends TransformerAbstract
 	{
 		//return $this->collection($project->members, new ProjectMemberTransformer());
 		return $this->collection($project->members, new UserTransformer());
+	}
+
+
+	public function includeClient(Project $project)
+	{
+		//dd($project->client);
+		return $this->item($project->client, new ClientTransformer());
 	}
 }
