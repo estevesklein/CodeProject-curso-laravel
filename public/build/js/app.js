@@ -12,7 +12,7 @@ angular.module('app.filters',[]);
 
 
 // 31/08/2015 - Criando um Provider
-app.provider('appConfig', function(){
+app.provider('appConfig', ['$httpParamSerializerProvider', function($httpParamSerializerProvider){
 	var config = {
 		baseUrl: 'http://localhost:8000',
 		project:{
@@ -21,6 +21,31 @@ app.provider('appConfig', function(){
 				{value: 2, label: 'Iniciado'},
 				{value: 3, label: 'Concluído'}
 			]
+		},
+		utils:{
+			transformRequest: function(data){
+				if(angular.isObject(data)){
+					return $httpParamSerializerProvider.$get()(data);
+				}
+				return data;
+			},
+			transformResponse: function(data, headers){
+				var headersGetter = headers();
+				//console.log(data);
+				//console.log(headers);
+
+				if(headersGetter['content-type'] == 'application/json' || 
+					headersGetter['content-type'] == 'text/json'){
+
+					var dataJson = JSON.parse(data);
+					if(dataJson.hasOwnProperty('data')){
+						dataJson = dataJson.data;
+					}
+					return dataJson;
+				}
+				
+				return data;
+			}
 		}
 	};
 
@@ -30,7 +55,7 @@ app.provider('appConfig', function(){
 			return config;
 		}
 	}
-});
+}]);
 
 //app.config(['$routeProvider', 'OAuthProvider',function($routeProvider, OAuthProvider){
 //app.config(['$routeProvider', 'OAuthProvider', 'OAuthTokenProvider',function($routeProvider, OAuthProvider, OAuthTokenProvider){
@@ -45,24 +70,11 @@ app.config([
 		$httpProvider.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=utf-8';
 		$httpProvider.defaults.headers.put['Content-Type'] = 'application/x-www-form-urlencoded;charset=utf-8';
 
-	// 10/09/2015 - transforResponse Global
-	$httpProvider.defaults.transformResponse = function(data,headers){
-		var headersGetter = headers();
-		//console.log(data);
-		//console.log(headers);
+	// 10/09/2015 - transformResponse Global
+	$httpProvider.defaults.transformResponse = appConfigProvider.config.utils.transformResponse;
 
-		if(headersGetter['content-type'] == 'application/json' || 
-			headersGetter['content-type'] == 'text/json'){
-
-			var dataJson = JSON.parse(data);
-			if(dataJson.hasOwnProperty('data')){
-				dataJson = dataJson.data;
-			}
-			return dataJson;
-		}
-		
-		return data;
-	}
+	// 14/09/2015
+	$httpProvider.defaults.transformRequest = appConfigProvider.config.utils.transformRequest;
 
 	$routeProvider
 		.when('/login',{
