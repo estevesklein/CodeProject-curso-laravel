@@ -137,34 +137,5 @@ class ProjectController extends Controller
         return  ['error' => 1, 'msg' => 'Erro ao tentar deletar o Project'];
         //*/
     }
-
-
-    /*
-    23.08.2015 - Movido para services
-    private function checkProjectOwner($projectId)
-    {
-
-        $userId = \Authorizer::getResourceOwnerId();
-
-
-        return $this->repository->isOwner($projectId, $userId);
-    }
-
-
-    private function checkProjectMember($projectId)
-    {
-        
-        $userId = \Authorizer::getResourceOwnerId();
-        return $this->repository->hasMember($projectId, $userId);
-    }
-
-    private function checkProjectPermissions($projectId){
-        
-        if($this->checkProjectOwner($projectId) or $this->checkProjectMember($projectId)){
-            return true;
-        }
-        return false;
-    }
-    */
-
+    
 }

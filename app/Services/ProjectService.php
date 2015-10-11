@@ -3,14 +3,16 @@
 namespace CodeProject\Services;
 
 use CodeProject\Repositories\ProjectRepository;
-use CodeProject\Repositories\ProjectMemberRepository;
 use CodeProject\Validators\ProjectValidator;
-use CodeProject\Validators\ProjectFileValidator;
-
 use Prettus\Validator\Exceptions\ValidatorException;
 
+/*
+use CodeProject\Repositories\ProjectMemberRepository;
+
+use CodeProject\Validators\ProjectFileValidator;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Contracts\Filesystem\Factory as Storage;
+*/
 
 class ProjectService
 {
@@ -22,33 +24,36 @@ class ProjectService
     /**
      * @var ProjectMemberRepository
      */
-    protected $repositoryMember;
+    //protected $repositoryMember;
 
     /**
      * @var ProjectValidator
      */
     protected $validator;
 
-    private $filesystem;
+    //private $filesystem;
 
-    private $storage;
+    //private $storage;
 
     /**
      * @var ProjectFileValidator
      */
     protected $validatorProjectFile;
 
-	public function __construct(ProjectRepository $repository, ProjectValidator $validator, ProjectMemberRepository $repositoryMember, Filesystem $filesystem, Storage $storage, ProjectFileValidator $validatorProjectFile)
+    public function __construct(ProjectRepository $repository, ProjectValidator $validator)
+	//public function __construct(ProjectRepository $repository, ProjectValidator $validator, ProjectMemberRepository $repositoryMember, Filesystem $filesystem, Storage $storage, ProjectFileValidator $validatorProjectFile)
 	{
         $this->repository = $repository;
 		$this->validator = $validator;
 
+        /*
         $this->repositoryMember = $repositoryMember;
 
         $this->filesystem = $filesystem;
         $this->storage = $storage;
 
         $this->validatorProjectFile = $validatorProjectFile;
+        */
 	}
 
 	public function create(array $data)
@@ -65,13 +70,15 @@ class ProjectService
 
             $result = $this->repository->create($data);
 
+            return $result;
+
             //dd($result);
 
             // adiciona somente um membro ao projeto
-            if(!empty($result->id) && !empty($data['user_id']))
-                $this->addMember(['project_id' => $result->id, 'user_id' => $data['user_id']]);
+            //if(!empty($result->id) && !empty($data['user_id']))
+            //    $this->addMember(['project_id' => $result->id, 'user_id' => $data['user_id']]);
 
-            return $result;
+            //return $result;
 
         } catch(ValidatorException $e) {
             return [
@@ -98,6 +105,7 @@ class ProjectService
 	}
 
 
+    /*
     // 04.08.2015 - Para adicionar um novo member em um projeto
     public function addMember(array $data)
     {
@@ -121,6 +129,7 @@ class ProjectService
 
         return $result;
     }
+    
 
     // 04.08.2015 - Para verificar se um usuário é membro de um determinado projeto
     public function isMember($project_id, $user_id)
@@ -135,9 +144,10 @@ class ProjectService
 
         return false;
     }
+    */
 
 
-
+    /*
     public function createFile(array $data)
     {
         // name
@@ -205,6 +215,7 @@ class ProjectService
             return ['error' => true];
 
     }
+    */
 
 
 

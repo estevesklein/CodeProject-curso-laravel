@@ -29,7 +29,7 @@ class ClientRepositoryEloquent extends BaseRepository implements ClientRepositor
      */
     public function boot()
     {
-        $this->pushCriteria( app(RequestCriteria::class) );
+        $this->pushCriteria(app(RequestCriteria::class));
         //$this->pushCriteria(app('Prettus\Repository\Criteria\RequestCriteria'));
     }
 }

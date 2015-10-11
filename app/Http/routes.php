@@ -71,7 +71,6 @@ Route::group(['middleware' => 'oauth'], function(){
 		//Route::post('{id}/note', 'ProjectNoteController@store');
 		Route::post('{id}/note', 'ProjectNoteController@create');
 		Route::put('note/{id}', 'ProjectNoteController@update');
-
 		Route::delete('note/{id}', 'ProjectNoteController@destroy');
 
 		
@@ -80,9 +79,19 @@ Route::group(['middleware' => 'oauth'], function(){
 		//Route::get('project/{id}/members', 'ProjectController@members');
 		Route::get('{id}/members', 'ProjectMemberController@members');
 
-		Route::post('{id}/file', 'ProjectFileController@store');
+		
 
-		Route::delete('{id}/file', 'ProjectFileController@destroy');
+		// 27.09.2015 - Project File
+		Route::get('{id}/file', 'ProjectFileController@index');
+		Route::get('file/{fileId}', 'ProjectFileController@show');
+		Route::get('file/{fileId}/download', 'ProjectFileController@showFile');
+		Route::post('{id}/file', 'ProjectFileController@store');
+		//Route::post('{id}/note', 'ProjectFileController@create');
+		Route::put('file/{fileId}', 'ProjectFileController@update');
+		Route::delete('file/{fileId}', 'ProjectFileController@destroy');
+
+		//Route::post('{id}/file', 'ProjectFileController@store');
+		//Route::delete('{id}/file', 'ProjectFileController@destroy');
 	});
 
 
