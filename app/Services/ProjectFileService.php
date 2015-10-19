@@ -154,7 +154,7 @@ class ProjectFileService
     }
 
 
-
+    /* // 17/10/2015 - Removido. Agora middleware Project é responsável pela verificação. 
     public function checkProjectOwner($projectFileId)
     {
 
@@ -183,4 +183,5 @@ class ProjectFileService
         }
         return false;
     }
+    */
 }

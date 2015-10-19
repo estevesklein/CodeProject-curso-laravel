@@ -46,9 +46,9 @@ class ProjectTaskController extends Controller
     public function index($projectId)
     {
 
-        if($this->checkProjectTaskPermissions($projectId) == false){
-            return ['error' => 'Access Forbidden'];
-        }
+        //if($this->checkProjectTaskPermissions($projectId) == false){
+        //    return ['error' => 'Access Forbidden'];
+        //}
 
         return $this->repository->findWhere(['project_id' => $projectId]);
         //return $this->repository->all();
@@ -64,7 +64,7 @@ class ProjectTaskController extends Controller
     public function create(Request $request)
     {
         //dd($request->all());
-        return $this->service->create($request->all());
+        //return $this->service->create($request->all());
     }
 
     /**
@@ -73,8 +73,11 @@ class ProjectTaskController extends Controller
      * @param  Request  $request
      * @return Response
      */
-    public function store(Request $request)
+    public function store(Request $request, $id)
     {
+        $data = $request->all();
+        $data['project_id'] = $id;
+        return $this->service->create($data);
         //return $this->repository->create($request->all());
     }
 
@@ -84,14 +87,23 @@ class ProjectTaskController extends Controller
      * @param  int  $id
      * @return Response
      */
-    public function show($projectId, $id)
+    public function show($id, $idTask)
     {
+        $result = $this->repository->findWhere(['project_id' => $id, 'id' => $idTask]);
+        if(isset($result['data']) && count($result['data']) == 1){
+            $result = [
+                'data' => $result['data'][0]
+            ];
+        }
+        return $result;
+        /*
 
         if($this->checkProjectTaskPermissions($projectId) == false){
             return ['error' => 'Access Forbidden'];
         }
 
         return $this->repository->find($id);
+        */
     }
 
     /**
@@ -112,9 +124,14 @@ class ProjectTaskController extends Controller
      * @param  int  $id
      * @return Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $id, $idTask)
     {
 
+        $data = $request->all();
+        $data['project_id'] = $id;
+        return $this->service->update($data, $idTask);
+
+        /*
         $projectTask = $this->repository->skipPresenter()->find($id);
 
         $projectId = $projectTask->project_id;
@@ -124,6 +141,7 @@ class ProjectTaskController extends Controller
         }
         
         return $this->service->update($request->all(),$id);
+        */
 
     }
 
@@ -133,8 +151,12 @@ class ProjectTaskController extends Controller
      * @param  int  $id
      * @return Response
      */
-    public function destroy($id)
+    public function destroy($id, $idTask)
     {
+
+        $this->repository->delete($idTask);
+
+        /*
         //return $this->repository->delete($taskId);
 
         $projectTask = $this->repository->skipPresenter()->find($id);
@@ -152,12 +174,13 @@ class ProjectTaskController extends Controller
             return ['error' => 0];
 
         return  ['error' => 1, 'msg' => 'Erro ao tentar deletar a Task'];
+        */
         
 
     }
 
 
-
+/*
     private function checkProjectTaskPermissions($projectId){
         
         if($this->projectService->checkProjectOwner($projectId) or $this->projectService->checkProjectMember($projectId)){
@@ -166,4 +189,5 @@ class ProjectTaskController extends Controller
         return false;
 
     }
+*/
 }

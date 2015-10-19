@@ -48,47 +48,35 @@ Route::group(['middleware' => 'oauth'], function(){
 
 	
 
-	Route::group(['prefix' => 'project'], function(){
-	
-		/*
-		Route::get('task', 'ProjectTaskController@index');
-		Route::post('task', 'ProjectTaskController@store');
-		Route::get('task/{id}', 'ProjectTaskController@show');
-		Route::put('task/{id}', 'ProjectTaskController@update');
-		Route::delete('task/{id}', 'ProjectTaskController@destroy');
-		*/
-		// 23.08.2015 - Project Task
-		Route::get('{projectId}/task', 'ProjectTaskController@index');
-		//Route::post('{projectId}/task', 'ProjectTaskController@store');
-		Route::get('{projectId}/task/{id}', 'ProjectTaskController@show');
-		Route::put('task/{id}', 'ProjectTaskController@update');
-		Route::delete('task/{id}', 'ProjectTaskController@destroy');
-
+	Route::group(['middleware' => 'check.project.permission', 'prefix' => 'project'], function(){
 
 		// 04.08.2015 - Project Note
-		Route::get('{projectId}/note', 'ProjectNoteController@index');
-		Route::get('{projectId}/note/{id}', 'ProjectNoteController@show');
-		//Route::post('{id}/note', 'ProjectNoteController@store');
-		Route::post('{id}/note', 'ProjectNoteController@create');
-		Route::put('note/{id}', 'ProjectNoteController@update');
-		Route::delete('note/{id}', 'ProjectNoteController@destroy');
+		Route::get('{id}/note', 'ProjectNoteController@index');
+		Route::get('{id}/note/{noteId}', 'ProjectNoteController@show');
+		Route::post('{id}/note', 'ProjectNoteController@store');
+		Route::put('{id}/note/{noteId}', 'ProjectNoteController@update');
+		Route::delete('{id}/note/{noteId}', 'ProjectNoteController@destroy');
 
-		
+		// 27.09.2015 - Project File
+		Route::get('{id}/file', 'ProjectFileController@index');
+		Route::get('{id}/file/{fileId}', 'ProjectFileController@show');
+		Route::get('{id}/file/{fileId}/download', 'ProjectFileController@showFile');
+		Route::post('{id}/file', 'ProjectFileController@store');
+		Route::put('{id}/file/{fileId}', 'ProjectFileController@update');
+		Route::delete('{id}/file/{fileId}', 'ProjectFileController@destroy');
+	
+		// 23.08.2015 - Project Task
+		Route::get('{id}/task', 'ProjectTaskController@index');
+		Route::get('{id}/task/{taskId}', 'ProjectTaskController@show');
+		Route::post('{id}/task', 'ProjectTaskController@store');
+		Route::put('{id}/task/{taskId}', 'ProjectTaskController@update');
+		Route::delete('{id}/task/{taskId}', 'ProjectTaskController@destroy');
+
 
 		// Todos os membros do projeto (04.08.2015)
 		//Route::get('project/{id}/members', 'ProjectController@members');
 		Route::get('{id}/members', 'ProjectMemberController@members');
 
-		
-
-		// 27.09.2015 - Project File
-		Route::get('{id}/file', 'ProjectFileController@index');
-		Route::get('file/{fileId}', 'ProjectFileController@show');
-		Route::get('file/{fileId}/download', 'ProjectFileController@showFile');
-		Route::post('{id}/file', 'ProjectFileController@store');
-		//Route::post('{id}/note', 'ProjectFileController@create');
-		Route::put('file/{fileId}', 'ProjectFileController@update');
-		Route::delete('file/{fileId}', 'ProjectFileController@destroy');
 
 		//Route::post('{id}/file', 'ProjectFileController@store');
 		//Route::delete('{id}/file', 'ProjectFileController@destroy');

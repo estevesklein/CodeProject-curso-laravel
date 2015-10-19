@@ -67,15 +67,14 @@ class ProjectFileController extends Controller
 
         //dd($data);
 
-        // ProjectFileService
         return $this->service->create($data);
     }
 
     public function showFile($id)
     {
-        if($this->service->checkProjectPermissions($id) == false){
-            return ['error' => 'Access Forbidden'];
-        }
+        //if($this->service->checkProjectPermissions($id) == false){
+        //    return ['error' => 'Access Forbidden'];
+        //}
 
         $filePath = $this->service->getFilePath($id);
         $fileContent = file_get_contents($filePath);
@@ -93,13 +92,22 @@ class ProjectFileController extends Controller
      * @param int $id
      * @return Response
      */
-    public function show($id)
+    public function show($id, $idFile)
     {
+        $result = $this->repository->findWhere(['project_id' => $id, 'id' => $idFile]);
+        if(isset($result['data']) && count($result['data']) == 1){
+            $result = [
+                'data' => $result['data'][0]
+            ];
+        }
+        return $result;
+        /*
         if($this->service->checkProjectPermissions($id) == false){
             return ['error' => 'Access Forbidden'];
         }
 
         return $this->repository->find($id);
+        */
     }
 
     /**
@@ -107,12 +115,18 @@ class ProjectFileController extends Controller
      * @param int $id
      * @return Reponse
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $id, $idFile)
     {
+        $data = $request->all();
+        $data['project_id'] = $id;
+        return $this->service->update($data, $idFile);
+        /*
         if($this->service->checkProjectOwner($id) == false){
             return ['error' => 'Access Forbidden'];
         }
         return $this->service->update($request->all(), $id);
+        */
+
     }
 
 
@@ -122,8 +136,10 @@ class ProjectFileController extends Controller
      * @param  int  $id
      * @return Response
      */
-    public function destroy($id)
+    public function destroy($id, $idFile)
     {
+        $this->repository->delete($idFile);
+        /*
         //if($this->service->checkProjectPermissions($id) == false){
         if($this->service->checkProjectOwner($id) == false){
             return ['error' => 'Access Forbidden'];
@@ -131,6 +147,7 @@ class ProjectFileController extends Controller
 
         //return $this->service->delete($id);
         $this->service->delete($id);
+        */
     }
 
 }

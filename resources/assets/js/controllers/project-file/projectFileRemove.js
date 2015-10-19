@@ -5,7 +5,7 @@ angular.module('app.controllers')
 			//$scope.projectFile = ProjectFile.get({id: $routeParams.id});
 
 			$scope.projectFile = ProjectFile.get({
-				id: null,
+				id: $routeParams.id,
 				idFile: $routeParams.idFile
 			});
 
@@ -13,7 +13,7 @@ angular.module('app.controllers')
 			
 			$scope.remove = function(){
 				$scope.projectFile.$delete({
-					id: null,
+					id: $routeParams.id,
 					idFile: $scope.projectFile.id
 				}).then(function(){
 					$location.path('/project/' + $routeParams.id + '/files');

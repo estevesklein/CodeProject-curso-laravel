@@ -45,9 +45,9 @@ class ProjectNoteController extends Controller
      */
     public function index($projectId)
     {
-        if($this->checkProjectNotePermissions($projectId) == false){
-            return ['error' => 'Access Forbidden'];
-        }
+        //if($this->checkProjectNotePermissions($projectId) == false){
+        //    return ['error' => 'Access Forbidden'];
+        //}
 
         //return $this->repository->all();
         //return $this->repository->with(['client', 'user'])->all();
@@ -62,7 +62,7 @@ class ProjectNoteController extends Controller
     public function create(Request $request)
     {
         //dd($request->all());
-        return $this->service->create($request->all());
+        //return $this->service->create($request->all());
     }
 
     /**
@@ -71,8 +71,11 @@ class ProjectNoteController extends Controller
      * @param  Request  $request
      * @return Response
      */
-    public function store(Request $request)
+    public function store(Request $request, $id)
     {
+        $data = $request->all();
+        $data['project_id'] = $id;
+        return $this->service->create($data);
         //return $this->repository->create($request->all());
     }
 
@@ -82,14 +85,23 @@ class ProjectNoteController extends Controller
      * @param  int  $id
      * @return Response
      */
-    public function show($projectId, $id)
+    public function show($id, $idNote)
     {
+        $result = $this->repository->findWhere(['project_id' => $id, 'id' => $idNote]);
+        if(isset($result['data']) && count($result['data']) == 1){
+            $result = [
+                'data' => $result['data'][0]
+            ];
+        }
+        return $result;
+        /*
         if($this->checkProjectNotePermissions($projectId) == false){
             return ['error' => 'Access Forbidden'];
         }
 
         return $this->repository->find($id);
         //return $this->repository->with(['client', 'user'])->find($id);
+        */
     }
 
     /**
@@ -110,9 +122,13 @@ class ProjectNoteController extends Controller
      * @param  int  $id
      * @return Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $id, $idNote)
     {
-        
+        $data = $request->all();
+        $data['project_id'] = $id;
+        return $this->service->update($data, $idNote);
+
+        /*
         $projectNote = $this->repository->skipPresenter()->find($id);
 
         $projectId = $projectNote->project_id;
@@ -123,12 +139,6 @@ class ProjectNoteController extends Controller
 
         //return $this->service->update($request->all(),$noteId);
         return $this->service->update($request->all(),$id);
-
-        /*
-        $result = $this->repository->find($id)->update($request->all());
-        if($result)
-            return ['error' => 0];
-        return  ['error' => 1, 'msg' => 'Erro ao tentar atualizar o Projecte'];
         */
     }
 
@@ -138,9 +148,12 @@ class ProjectNoteController extends Controller
      * @param  int  $id
      * @return Response
      */
-    public function destroy($id)
+    public function destroy($id, $noteId)
     {
 
+        $this->repository->delete($noteId);
+        
+        /*
         $projectNote = $this->repository->skipPresenter()->find($id);
         //$result = $this->repository->delete($id);
 
