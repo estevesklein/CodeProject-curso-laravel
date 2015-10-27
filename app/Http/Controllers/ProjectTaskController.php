@@ -89,6 +89,9 @@ class ProjectTaskController extends Controller
      */
     public function show($id, $idTask)
     {
+        return $this->repository->find($idTask);
+
+        /*
         $result = $this->repository->findWhere(['project_id' => $id, 'id' => $idTask]);
         if(isset($result['data']) && count($result['data']) == 1){
             $result = [
@@ -154,7 +157,8 @@ class ProjectTaskController extends Controller
     public function destroy($id, $idTask)
     {
 
-        $this->repository->delete($idTask);
+        $this->service->delete($idTask);
+        //$this->repository->delete($idTask);
 
         /*
         //return $this->repository->delete($taskId);

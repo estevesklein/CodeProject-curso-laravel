@@ -95,6 +95,7 @@ class ProjectFileService
 
     public function getFilePath($id)
     {
+
         $projectFile = $this->repository->skipPresenter()->find($id);
         return $this->getBaseUrl($projectFile);
     }
