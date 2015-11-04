@@ -139,7 +139,7 @@ class ProjectFileController extends Controller
      */
     public function destroy($id, $idFile)
     {
-        $this->repository->delete($idFile);
+        //$this->repository->delete($idFile);
         /*
         //if($this->service->checkProjectPermissions($id) == false){
         if($this->service->checkProjectOwner($id) == false){
@@ -147,8 +147,8 @@ class ProjectFileController extends Controller
         }
 
         //return $this->service->delete($id);
-        $this->service->delete($id);
         */
+        $this->service->delete($idFile);
     }
 
 }
