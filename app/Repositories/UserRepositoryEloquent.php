@@ -11,7 +11,7 @@ use CodeProject\Presenters\UserPresenter;
 class UserRepositoryEloquent extends BaseRepository implements UserRepository
 {
 	protected $fieldSearchable = [
-		'name',
+		'name'=>'like',
 	];
 
 	public function model()
@@ -26,6 +26,6 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
 
     public function boot()
     {
-        $this->pushCriteria( app(RequestCriteria::class) );
+        $this->pushCriteria(app(RequestCriteria::class));
     }
 }

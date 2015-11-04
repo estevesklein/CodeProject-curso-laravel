@@ -39,7 +39,7 @@ angular.module('app.controllers')
 			};
 
 			$scope.selectUser = function(item){
-				$scope.projectMember.member_id = item.id;
+				$scope.projectMember.user_id = item.id;
 			};
 
 
