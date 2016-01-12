@@ -34,6 +34,12 @@ angular.module('app.controllers')
 					
 				}, function(data){
 					$scope.error.error = true;
+
+					// tradução da mensagem de erro "invalid_credentials"
+					if('invalid_credentials' === data.data.error){
+						data.data.error_description = 'Por favor, verifique seu login e senha.';
+					}
+
 					$scope.error.message = data.data.error_description;
 					
 				});

@@ -30,7 +30,9 @@ config.vendor_path_js = [
 	config.bower_path + '/query-string/query-string.js',
 	config.bower_path + '/angular-oauth2/dist/angular-oauth2.min.js',
 
-	config.bower_path + '/ng-file-upload/ng-file-upload.min.js'
+	config.bower_path + '/ng-file-upload/ng-file-upload.min.js',
+
+	config.bower_path + '/angular-http-auth/src/http-auth-interceptor.js',
 ];
 
 config.build_path_css = config.build_path + '/css';

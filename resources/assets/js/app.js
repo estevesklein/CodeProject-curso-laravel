@@ -1,6 +1,7 @@
 var app = angular.module('app',[
 	'ngRoute', 'angular-oauth2', 'app.controllers', 'app.services', 'app.filters', 'app.directives',
-	'ui.bootstrap.typeahead', 'ui.bootstrap.datepicker', 'ui.bootstrap.tpls', 'ngFileUpload'
+	'ui.bootstrap.typeahead', 'ui.bootstrap.datepicker', 'ui.bootstrap.tpls', 'ui.bootstrap.modal',
+	'ngFileUpload', 'http-auth-interceptor'
 ]);
 //var app = angular.module('app',['ngRoute', 'angular-oauth2', 'app.controllers', 'ngCookies']);
 
@@ -83,16 +84,30 @@ app.config([
 		$httpProvider.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=utf-8';
 		$httpProvider.defaults.headers.put['Content-Type'] = 'application/x-www-form-urlencoded;charset=utf-8';
 
-	// 10/09/2015 - transformResponse Global
-	$httpProvider.defaults.transformResponse = appConfigProvider.config.utils.transformResponse;
 
 	// 14/09/2015
 	$httpProvider.defaults.transformRequest = appConfigProvider.config.utils.transformRequest;
+
+	// 10/09/2015 - transformResponse Global
+	$httpProvider.defaults.transformResponse = appConfigProvider.config.utils.transformResponse;
+
+	// 07.01.2016 - interceptor
+	$httpProvider.interceptors.splice(0,1); // remover na posição 0, somente 1
+	$httpProvider.interceptors.splice(0,1); // remover na posição 0, somente 1
+	$httpProvider.interceptors.push('oauthFixInterceptor');
 
 	$routeProvider
 		.when('/login',{
 			templateUrl: 'build/views/login.html',
 			controller: 'LoginController'
+		})
+		.when('/logout',{
+			resolve: {
+				logout: ['$location', 'OAuthToken', function($location,OAuthToken){
+					OAuthToken.removeToken();
+					return $location.path('/login');
+				}]
+			}
 		})
 		.when('/home',{
 			templateUrl: 'build/views/home.html',
@@ -230,20 +245,66 @@ app.config([
 }]);
 
 // 27.08.2015 - Metodo para executar as funções após o angular ser carregado
-app.run(['$rootScope', '$window', 'OAuth', function($rootScope, $window, OAuth) {
+app.run(['$rootScope', '$location', '$http', '$modal', 'httpBuffer', 'authService', 'OAuth',
+	function($rootScope, $location, $http, $modal, httpBuffer, authService, OAuth) {
+
+
+	// 06.01.2015 - autorização
+	$rootScope.$on('$routeChangeStart', function(event,next,current){
+		if(next.$$route.originalPath != '/login'){
+			if(!OAuth.isAuthenticated()){
+				$location.path('login');
+			}
+		}
+	});
+
+
+
 	// adicionando um evento
-    $rootScope.$on('oauth:error', function(event, rejection) {
-      // Ignore `invalid_grant` error - should be catched on `LoginController`.
-      if ('invalid_grant' === rejection.data.error) {
-        return;
-      }
+	// verificando o tipo de erro
+    $rootScope.$on('oauth:error', function(event, data) {
 
-      // Refresh token when a `invalid_token` error occurs.
-      if ('invalid_token' === rejection.data.error) {
-        return OAuth.getRefreshToken();
-      }
+    	//console.log(data.rejection.data.error);
 
-      // Redirect to `/login` with the `error_reason`.
-      return $window.location.href = '/login?error_reason=' + rejection.data.error;
+    	// Ignore `invalid_grant` error - should be catched on `LoginController`.
+    	if ('invalid_grant' === data.rejection.data.error) {
+    		return;
+    	}
+
+    	//if ('invalid_token' === data.rejection.data.error) {
+    	//	console.log('REFRESH TOKEN');
+    	//	console.log(data.rejection.data.error);
+		//
+    	//	setTimeout(function(){
+    	//		return OAuth.getRefreshToken();
+    	//	}, 3000);
+    	//}
+
+    	// Refresh token when a `invalid_token` error occurs.
+    	if ('access_denied' === data.rejection.data.error) {
+
+    		// armazena em buffer as requisições com access_denied
+    		httpBuffer.append(data.rejection.config, data.deferred);
+
+    		//if(!$rootScope.loginModalOpened){
+    		//	var modalInstance = $modal.open({
+    		//		templateUrl: 'build/views/templates/loginModal.html',
+    		//		controller: 'LoginModalController'
+    		//	});
+    		//	$rootScope.loginModalOpened = true;
+    		//}
+    		
+    		
+    		OAuth.getRefreshToken().then(function(){
+    			console.log('* Refresh Token: ' + Date());
+    			authService.loginConfirmed();
+    		});
+
+    		return;
+    	}
+
+    	// Redirect to `/login` with the `error_reason`.
+    	//return $window.location.href = '/login?error_reason=' + rejection.data.error;
+    	return $location.path('login');
     });
-  }]);
+}]);
