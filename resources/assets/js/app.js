@@ -1,7 +1,8 @@
 var app = angular.module('app',[
 	'ngRoute', 'angular-oauth2', 'app.controllers', 'app.services', 'app.filters', 'app.directives',
 	'ui.bootstrap.typeahead', 'ui.bootstrap.datepicker', 'ui.bootstrap.tpls', 'ui.bootstrap.modal',
-	'ngFileUpload', 'http-auth-interceptor'
+	'ngFileUpload', 'http-auth-interceptor', 'angularUtils.directives.dirPagination',
+	'mgcrea.ngStrap.navbar', 'ui.bootstrap.dropdown'
 ]);
 //var app = angular.module('app',['ngRoute', 'angular-oauth2', 'app.controllers', 'ngCookies']);
 
@@ -52,7 +53,8 @@ app.provider('appConfig', ['$httpParamSerializerProvider', function($httpParamSe
 					headersGetter['content-type'] == 'text/json'){
 
 					var dataJson = JSON.parse(data);
-					if(dataJson.hasOwnProperty('data')){
+					// se tiver a propriedade 'data' e somente uma propriedade dentro do objeto
+					if(dataJson.hasOwnProperty('data') && Object.keys(dataJson).length==1){
 						dataJson = dataJson.data;
 					}
 					return dataJson;
@@ -117,19 +119,23 @@ app.config([
 		// Clients
 		.when('/clients',{
 			templateUrl: 'build/views/client/list.html',
-			controller: 'ClientListController'
+			controller: 'ClientListController',
+			title: 'Clientes'
 		})
 		.when('/clients/new',{
 			templateUrl: 'build/views/client/new.html',
-			controller: 'ClientNewController'
+			controller: 'ClientNewController',
+			title: 'Clientes'
 		})
 		.when('/clients/:id/edit',{
 			templateUrl: 'build/views/client/edit.html',
-			controller: 'ClientEditController'
+			controller: 'ClientEditController',
+			title: 'Clientes'
 		})
 		.when('/clients/:id/remove',{
 			templateUrl: 'build/views/client/remove.html',
-			controller: 'ClientRemoveController'
+			controller: 'ClientRemoveController',
+			title: 'Clientes'
 		})
 
 		// Projects
@@ -256,6 +262,12 @@ app.run(['$rootScope', '$location', '$http', '$modal', 'httpBuffer', 'authServic
 				$location.path('login');
 			}
 		}
+	});
+
+	// acontece depois que Angular encontrou a rota, conseguiu a view e vai mostrar o template
+	$rootScope.$on('$routeChangeSuccess', function(event, current, previous){
+		//console.log(current.$$route.title);
+		$rootScope.pageTitle = current.$$route.title;
 	});
 
 

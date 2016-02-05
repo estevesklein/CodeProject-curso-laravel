@@ -4,11 +4,21 @@
 			<div class="panel panel-default">
 				<div class="panel-heading">Listagem de projetos</div>
 				<div class="panel-body">
-					<table class="table">
+					<table class="table table-striped table-hover">
 						<thead>
 							<tr>
-								<th>Name</th>
-								<th>Client</th>
+								<th ng-click="sort('id')">
+									Id
+									<span class="glyphicon sort-icon" ng-show="orderBy=='id'" ng-class="{'glyphicon-chevron-up':sortedBy=='desc','glyphicon-chevron-down':sortedBy=='asc'}"></span>
+								</th>
+								<th ng-click="sort('name')">
+									Name
+									<span class="glyphicon sort-icon" ng-show="orderBy=='name'" ng-class="{'glyphicon-chevron-up':sortedBy=='desc','glyphicon-chevron-down':sortedBy=='asc'}"></span>
+								</th>
+
+								<th >
+									Client
+								</th>
 								<th>Progress</th>
 								<th>Status</th>
 								<th>Due date</th>
@@ -16,7 +26,8 @@
 							</tr>
 						</thead>
 						<tbody>
-							<tr ng-repeat="o in projects">
+							<tr dir-paginate="o in projects | filter: q | itemsPerPage: projectsPerPage" total-items="totalProjects" current-page="pagination.current">
+								<td>{{o.id}}</td>
 								<td>{{o.name}}</td>
 								<td>{{o.client.data.name}}</td>
 								<td>{{o.progress}}</td>
@@ -34,6 +45,8 @@
 							</tr>
 						</tbody>
 					</table>
+
+					<dir-pagination-controls on-page-change="pageChanged(newPageNumber)"></dir-pagination-controls>
 					
 					
 
